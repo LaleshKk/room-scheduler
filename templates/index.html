@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Authentication</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script type="module" src="{{url_for('static', path='/firebase-login.js')}}"></script>
+    <style>
+        #login-box {
+            margin: 0 auto;
+            margin-top: 100px; 
+            width: 300px; 
+        }
+
+        body {
+            animation: gradientAnimation 10s ease infinite alternate;
+            background-size: 400% 400%;
+            background-image: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            height: 100vh;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+        label{
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-box">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div><br/>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+        </div><br/>
+        <div class="d-flex justify-content-center">
+            <button id="login" class="btn btn-success me-2">Login</button>
+            <button id="sign-up" class="btn btn-success">Sign Up</button>
+        </div>
+    </div>
+    {% if user_token %}
+        <div class="container">
+            <div class="text-end mb-4">
+                <button id="sign-out" class="btn btn-dark">Signout</button>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <p class="fs-4 text-center">Welcome, {{ user_token.email }}</p>
+                    {% if error_message %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error_message }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <a href="/add_room" class="btn btn-success btn-lg btn-block">Add Room</a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/list_room" class="btn btn-success btn-lg btn-block">Rooms List</a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/list_booking" class="btn btn-success btn-lg btn-block">List Booking</a>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <a href="/filter_booking" class="btn btn-success btn-lg btn-block">Filter Booking</a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/add_booking" class="btn btn-success btn-lg btn-block">Add Booking</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</body>
+</html>
