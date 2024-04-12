@@ -1,7 +1,8 @@
 'use strict';
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";;
+// import firebase
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
 
 
 const firebaseConfig = {
@@ -14,63 +15,84 @@ const firebaseConfig = {
 };
 
 window.addEventListener("load", function () {
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+	const app = initializeApp(firebaseConfig);
+	const auth = getAuth(app);
+	updateUI(document.cookie);
+	console.log("hello world load");
+	// signup of a new user to firebase
 
-    updateUI();
+	document.getElementById("sign-up").addEventListener('click', function () {
+		const email = document.getElementById("email").value
+		const password = document.getElementById("password").value
 
-    document.getElementById("login").addEventListener('click', function () {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+		createUserWithEmailAndPassword(auth, email, password)
+			.then((userCredential) => {
+				// we have a created user
+				const user = userCredential.user;
 
-        signInWithEmailAndPassword(auth, email, password)
-            .then(() => {
-                console.log("User logged in successfully!");
-            })
-            .catch((error) => {
-                console.log(error.code, error.message);
-            });
-    });
+				user.getIdToken().then((token) => {
+					document.cookie = "token=" + token + "; path=/; SameSite=Strict";
+					console.log(token);
+					window.location = "/";
+				});
+			})
+			// get the id token for the user who just logged in and force a redirect to /
+			.catch((error) => {
+				// issue with signup that we will drop to console
+				console.log(error.code + error.message);
+			})
+	})
 
-    document.getElementById("sign-out").addEventListener('click', function () {
-        signOut(auth)
-            .then(() => {
-                console.log("User signed out successfully!");
-            })
-            .catch((error) => {
-                console.error("Error signing out:", error);
-            });
-    });
+	// login of a user to firebase
+	document.getElementById("login").addEventListener('click', function () {
+		const email = document.getElementById("email").value
+		const password = document.getElementById("password").value
 
-    // Listen for changes in authentication state
-    onAuthStateChanged(auth, (user) => {
-        updateUI(user);
-    });
+		signInWithEmailAndPassword(auth, email, password)
+			.then((userCredential) => {
+				const user = userCredential.user;
+				console.log("logged in");
 
-    function updateUI(user) {
-        const loginBox = document.getElementById("login-box");
-        const signOutButton = document.getElementById("sign-out");
-        const links = document.querySelectorAll("a");
-        const link_row = document.getElementById("link-row");
+				user.getIdToken().then((token) => {
+					document.cookie = "token=" + token + "; path=/; SameSite=Strict";
+					console.log(token);
+					console.log(document.cookie);
+					window.location = "/";
+				});
+			})
+			.catch((error) => {
+				
+			})
+	})
+	console.log(document.cookie);
 
-        if (user) {
-            // User is signed in
-            loginBox.style.display = "none"; // Hide login box
-            signOutButton.style.display = "block"; // Show sign-out button
+	document.getElementById("sign-out").addEventListener('click', function () {
+		signOut(auth)
+			.then((output) => {
+				document.cookie = "token=;path=/; SameSite=Strict";
+				window.location = "/";
+				console.log(output);
+			})
+	})
+})
 
-            // Show links
-            links.forEach(link => {
-                link.style.display = "block";
-            });
-        } else {
-            // User is signed out
-            loginBox.style.display = "block"; // Show login box
-            signOutButton.style.display = "none"; // Hide sign-out button
+function updateUI(cookie) {
+	var token = parseCookieToken(cookie);
+	console.log(token.length);
+	if (token.length > 0) {
+		document.getElementById("login-box").hidden = true;
+	} else {
+		document.getElementById("login-box").hidden = false;
+	}
+};
 
-            // Hide links
-            links.forEach(link => {
-                link.style.display = "none";
-            });
-        }
-    }  
-});
+function parseCookieToken(cookie) {
+    var strings = cookie.split(';');
+
+    for (let i = 0; i < strings.length; i++) {
+        var temp = strings[i].trim().split('=');
+        if (temp[0] === "token")
+            return temp[1];
+    }
+    return "";
+}
