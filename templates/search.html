@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Room Scheduler | Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+                animation: gradientAnimation 10s ease infinite alternate;
+                background-size: 400% 400%;
+                background-image: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+                height: 100vh;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+        label{
+            color: white;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('filter-form').addEventListener('submit', function(e) {
+                e.preventDefault(); 
+                filterBookingsByStartDate();
+            });
+        });
+        
+        function filterBookingsByStartDate() {
+            var inputStartDate = document.getElementById('start_date').value;
+            var tableRows = document.querySelectorAll('table tbody tr'); 
+        
+            tableRows.forEach(function(row) {
+                var bookingStartDate = row.cells[3].textContent; 
+                if (bookingStartDate === inputStartDate || inputStartDate === '') {
+                    row.style.display = ''; 
+                } else {
+                    row.style.display = 'none'; 
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn btn-dark" style="float:right; margin-top:1%;">Home</a><br/>
+        <h3 class="text-center">FIlter Booking List</h3>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <form id="filter-form" class="mb-4">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto">
+                            <label class="sr-only" for="start_date">Start Date</label>
+                            <input type="date" class="form-control mb-2" id="start_date" name="start_date" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary mb-2" style="margin:auto;display:block;">Filter</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Customer name</th>
+                <th>Room No.</th>
+                <th>Start date</th>
+                <th>Start time</th>
+                <th>End date</th>
+                <th>End time</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ booking.customer_name }}</td>
+                        <td><a href="/filter_by_room/{{booking.room_name}}" target="_blank">{{ booking.room_name }}</a></td>
+                        <td>{{ booking.start_date }}</td>
+                        <td>{{ booking.start_time }}</td>
+                        <td>{{ booking.end_date }}</td>
+                        <td>{{ booking.endtime }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</body>
+</html>
