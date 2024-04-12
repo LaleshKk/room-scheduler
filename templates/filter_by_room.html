@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Room Scheduler | List By Room</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+                animation: gradientAnimation 10s ease infinite alternate;
+                background-size: 400% 400%;
+                background-image: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+                height: 100vh;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+        label{
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn btn-dark" style="float:right; margin-top:1%;">Home</a><br/>
+        <h3 class="text-center">Filter by Room</h3>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Customer name</th>
+                <th>Start date</th>
+                <th>Start time</th>
+                <th>End date</th>
+                <th>End time</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ booking.customer_name }}</td>
+                        <td>{{ booking.start_date }}</td>
+                        <td>{{ booking.start_time }}</td>
+                        <td>{{ booking.end_date }}</td>
+                        <td>{{ booking.endtime }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</body>
+</html>
